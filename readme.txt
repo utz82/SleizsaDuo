@@ -26,9 +26,10 @@ Setup
 
 Install Perl, Milkytracker, dasm, and Mess, if you haven't already done so.
 (If you do not wish to add these utilities to your search path, you can
-specify the paths in compile.bat/compile.sh instead).
+specify the paths in compile.bat/compile.sh instead. Windows users can also
+copy the relevent dasm, Perl and Mess files to /SleizsaDuo).
 
-Get the Channel F ROM files and put them in sleizsaduo/roms/channelf. These
+Get the Channel F ROM files and put them in SleizsaDuo/roms/channelf. These
 files are not distributed with Sleizsa Duo, but you can get them in various
 places, such as the original Sleizsa package for example.
 
