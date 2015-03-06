@@ -56,7 +56,8 @@ setting. Minimum tempo is 2. You cannot change the BPM. So, only values F02-F1F
 are allowed.
 
 If you are running out of space in the binary, try increasing the value in
-line 34 of main.asm.
+line 34 of main.asm. In theory, up to 62 KB are possible, but MESS will break
+when trying to use more than 8 KB.
 
 I tried my best to correct the drum speed shift. If you do however find it
 insufficient, you can try to experiment with the value in line 224 of main.asm.
