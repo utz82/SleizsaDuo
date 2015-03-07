@@ -45,15 +45,18 @@ You can use the included music.xm template to compose your tunes. It gives
 only a rough approximation of how the music will sound on the actual console,
 though. Especially lower notes will sound much worse.
 
-Tones must be entered into tracks 1 and 2, using instrument 00. Valid notes
+Tones must be entered into tracks 1 and 2, using instrument 01. Valid notes
 are C-0 - B-5.
 
-There are two interrupting drum sounds (instrument 01 and 02), they should
+There are two interrupting drum sounds (instrument 02 and 03), they should
 be placed in channel 3 or 4. Only one drum sound can be active at a given time.
 
 You can change the tempo with the Fxx command, or globally with the tempo
 setting. Minimum tempo is 2. You cannot change the BPM. So, only values F02-F1F
 are allowed.
+
+Other than Fxx, all effects will be ignored. Changes made to the instruments
+as well as volume settings are also ignored.
 
 If you are running out of space in the binary, try increasing the value in
 line 34 of main.asm. In theory, up to 62 KB are possible, but MESS will break
