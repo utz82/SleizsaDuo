@@ -129,7 +129,6 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 		$fileoffset = 76;				#initialize values
 		sysseek(INFILE, $fileoffset, 0) or die $!;
 		sysread(INFILE, $jx, 1) == 1 or die $!;
-		die "Error: invalid tempo setting" if (ord($jx) == 1);
 		$speed[0] = 0x100 - (ord($jx));
 		print "Global speed:\t\t $speed[0]\n" if ( $ARGV[0] eq '-v' && $ix == 0);
 		$drums[0] = 0;
