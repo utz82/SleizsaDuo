@@ -119,6 +119,7 @@ Thanks...
 =========
 
 ... to B00daW for the original Sleizsa routine.
-... to SeanRiddle, e5frog (veswiki.com), Blackbird, Urchlay, MESSdev, and 
-    others for documenting the Fairchild Channel F and the F8 chip.
-
+... to e5frog for veswiki.com, and for helping to get Sleizsa Duo to work on
+    real hardware
+... to SeanRiddle, Blackbird, Urchlay, MESSdev, and others for documenting 
+    the Fairchild Channel F and the F8 chip.
