@@ -71,8 +71,10 @@ Note to Programmers
 ===================
 
 You are free to use Sleizsa Duo in your programs, as long as you credit me.
-Beware that currently not all versions of the Channel F are supported. It
-works best with the original PAL version.
+Beware that Sleizsa Duo is not guaranteed to work on all Channel F versions.
+
+Sleizsa Duo is optimized for use with MESS. In order to use it on real hardware,
+you need to change line 59 of main.asm to "li $40".
 
 The routine can be relocated, but make sure the frequency table (.noteTab) is
 aligned to a $ff byte page boundary. The musicData section can reside anywhere

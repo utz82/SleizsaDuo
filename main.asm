@@ -56,7 +56,7 @@ main:
 	;di				;disable interrupts: ACTIVATE THIS IF YOUR HOMEBREW RUNS TIMER INTERRUPTS
 	clr				;initialize lo byte of speed counter
 	lr Kl,a
-	li $c0				;set up xor mask
+	li $c0				;set up xor mask - CHANGE THIS TO "li $40" WHEN RUNNING ON ACTUAL HARDWARE
 	lr 9,a
 	lisu 2				;set up ISAR to reference r16 (output state ch2)
 	lisl 0
