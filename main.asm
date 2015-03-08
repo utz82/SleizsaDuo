@@ -1,5 +1,5 @@
 ;**********************************************************************************************
-; Sleizsa Duo - Fairchild Channel F Music routine
+; Sleizsa Duo v0.2 - Fairchild Channel F Music routine
 ; by utz 2015 * irrlichtproject.de
 ;**********************************************************************************************
 ; Copyright (c) 2015, irrlicht project
@@ -12,7 +12,7 @@
 ;     * Redistributions in binary form must reproduce the above copyright
 ;       notice, this list of conditions and the following disclaimer in the
 ;       documentation and/or other materials provided with the distribution.
-;     * Neither the name Sleizsa Duo nor the
+;     * Neither the name of irrlicht project nor the
 ;       names of its contributors may be used to endorse or promote products
 ;       derived from this software without specific prior written permission.
 ;
@@ -53,7 +53,7 @@ cartridge.init:				;init bla
 ;r16 (ISAR) - output state ch2
 
 main:
-	di				;disable interrupts
+	;di				;disable interrupts: ACTIVATE THIS IF YOUR HOMEBREW RUNS TIMER INTERRUPTS
 	clr				;initialize lo byte of speed counter
 	lr Kl,a
 	li $c0				;set up xor mask
@@ -91,20 +91,14 @@ main:
 	xs 2				;ci 0, check for end marker
 	bz .selectPtn			;loop if end marker found
 	
-	;sr 4				;clear lower nibble - NEED BETTER SPEED CONTROL SO ON THE LONG RUN, LI something, N something will be better
-	;sl 4
-	ni $fc
 	lr Ku,a				;set hi byte of speed counter
-	
-	lr dc,h				;reload speed/drum byte
-	lm
-	;sl 4				;clear upper nibble
-	;sr 4
-	ni $3
-	
-	bnz .drum
-.drret
+
 	lm				;load note byte ch1
+	lr 0,a				;preserve it
+	xi 0
+	bm .drum			;if note byte >$80, play drum 1	
+.drret	
+	lr a,0				;restore note byte
 	lr h,dc				;backup ptn pointer
 	dci .noteTab
 	sl 1				;A=A*2
@@ -115,7 +109,13 @@ main:
 	lr 1,a
 			
 	lr dc,h				;restore ptn pointer
-	lm				;load note byte ch2		
+	lm				;load note byte ch2
+	lr 4,a
+	xi 0				;if note byte <$80, play drum 2
+	bm .drum2
+	
+.drret2	
+	lr a,4		
 	lr h,dc				;backup ptn pointer
 	dci .noteTab
 	sl 1				;A=A*2
@@ -151,14 +151,8 @@ main:
 	nop			;1	;tempo correction
 	
 .skip1
-	nop			;1	;volume correction, also gives (somewhat) better sound
-	nop			;1
-	nop			;1
-	nop			;1
-	nop			;1
-	nop			;1
-	nop			;1
-	nop			;1
+	lr q,dc			;4	;waste some time for volume correction, also gives (somewhat) better sound
+	lr q,dc			;4
 	lr a,s			;1	;and now, same as above but for ch2
 				;29
 				;___
@@ -203,8 +197,6 @@ main:
 .drum
 	lr h,dc				;backup data pointer
 	dci 0				;point to beginning of ram
-	ci 2				;select drum to play
-	bz .drum2
 	
 .drumlp1
 	li $c0				;load output mask to A
@@ -218,6 +210,7 @@ main:
 
 .drumexit
 	lr dc,h				;restore data pointer
+
 	clr				;stop sound
 	outs 5
 
@@ -228,13 +221,14 @@ main:
 	
 .drum2
 	li $ff				;set up drum timer
-	lr 0,a
+	lr 5,a
 	li $40				;set output state to 1000Hz
 	outs 5
 
 .drumlp2
+	clr				;zero A
 	lr q,dc				;waste some time
-	ds 0				;decrement drum timer
+	ds 5				;decrement drum timer
 	bnz .drumlp2
 	
 	sl 1				;set output state to 500Hz
@@ -242,7 +236,7 @@ main:
 	
 .drumlp3
 	lr q,dc				;waste some time
-	ds 0				;decrement drum timer
+	ds 5				;decrement drum timer
 	bnz .drumlp3
 
 	lr a,9				;set output state to 120Hz
@@ -254,10 +248,16 @@ main:
 	lr q,dc
 	lr q,dc
 	lr q,dc
-	ds 0				;decrement drum timer
+	ds 5				;decrement drum timer
 	bnz .drumlp4
+	
+	clr				;stop sound
+	outs 5
 
-	br .drumexit			;and return
+	li $d0				;adjust speed counter
+	lr Kl,a
+	
+	br .drret2			;return to main routine
 
 .enddrum				;debug
 

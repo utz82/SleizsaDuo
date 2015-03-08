@@ -1,4 +1,4 @@
-SLEIZSA DUO v0.1
+SLEIZSA DUO v0.2
 ================
 by utz 03'2015 * irrlichtproject.de * github.com/utz82
 
@@ -17,7 +17,7 @@ To use Sleizsa Duo, you will need to following:
 
 - dasm macro assembler (http://dasm-dillon.sourceforge.net)
 - Perl (http://www.perl.org/get.html)
-- an XM tracker (how about http://milkytracker.org)
+- an XM tracker (must support XM version 1.04 - try http://milkytracker.org)
 - Mess (http://www.mess.org - not required, but will come in handy)
 
 
@@ -46,14 +46,14 @@ only a rough approximation of how the music will sound on the actual console,
 though. Especially lower notes will sound much worse.
 
 Tones must be entered into tracks 1 and 2, using instrument 01. Valid notes
-are C-0 - B-5.
+are C-0 - B-5. However, notes above D-5 tend to glitch out.
 
 There are two interrupting drum sounds (instrument 02 and 03), they should
 be placed in channel 3 or 4. Only one drum sound can be active at a given time.
 
 You can change the tempo with the Fxx command, or globally with the tempo
-setting. Minimum tempo is 2. You cannot change the BPM. So, only values F02-F1F
-are allowed.
+setting. You cannot change the BPM. So, only values F01..F1F are allowed.
+Beware that after each pattern, the speed will be reset to the global value.
 
 Other than Fxx, all effects will be ignored. Changes made to the instruments
 as well as volume settings are also ignored.
@@ -63,24 +63,30 @@ line 34 of main.asm. In theory, up to 62 KB are possible, but MESS will break
 when trying to use more than 8 KB.
 
 I tried my best to correct the drum speed shift. If you do however find it
-insufficient, you can try to experiment with the value in line 224 of main.asm.
+insufficient, you can try to experiment with the values in line 217 resp. 257
+of main.asm.
 
 
 Note to Programmers
 ===================
 
 You are free to use Sleizsa Duo in your programs, as long as you credit me.
+Beware that currently not all versions of the Channel F are supported. It
+works best with the original PAL version.
 
 The routine can be relocated, but make sure the frequency table (.noteTab) is
 aligned to a $ff byte page boundary. The musicData section can reside anywhere
 in memory. There is also some free mem between the drum code and the note
-table ($8b9-$8ff), which you can use for your own subroutines/data.
+table, which you can use for your own subroutines/data.
 
 Scratchpad registers r0-r16 including the K register are used, so you'll have
 to work around that.
 
+In case you are using external interrupts in your homebrew, you must disable
+interrupts prior to calling Sleizsa Duo.
+
 Sleizsa Duo takes all the CPU time, so you can't do much else while music is
-playing. However, the section from line 154-161 could be used to update
+playing. However, the section from line 154-155 could be used to update
 graphics, as long as the gfx code takes approximately 8 cycles and doesn't
 destroy the r0-r16.
 
@@ -96,17 +102,21 @@ The following sections are the actual patterns, containing the music data.
 Patterns can be of arbitrary length, and must be terminated with a $00 byte.
 
 Each row in the pattern data consists of 3 bytes. The first byte contains
-information about the speed of the row, and the drum triggers. Drum triggers
-are encoded into bits 0-1 (0 - no drum, 1 - hihat, 2 - kick). The speed is
-encoded into bits 2-7. A higher value corresponds to a higher speed. The speed
-value may not be 0.
+information about the speed of the row. A higher value corresponds to a higher
+speed. The speed value may not be 0. You probably want to use values of $F0
+and up.
 
 Bytes 2-3 of a row are pointers to note values for channel 1 and 2, 
 respectively. A value of 0 signifies silence, available notes are 1-64.
+
+To trigger the hihat, add $80 to the note value of channel 1.
+To trigger the kick drum, add $80 to the note value of channel 2.
 
 
 Thanks...
 =========
 
 ... to B00daW for the original Sleizsa routine.
-... to SeanRiddle, e5frog (veswiki.com), Blackbird, Urchlay, MESSdev, and others for documenting the Fairchild Channel F and the F8 chip.
+... to SeanRiddle, e5frog (veswiki.com), Blackbird, Urchlay, MESSdev, and 
+    others for documenting the Fairchild Channel F and the F8 chip.
+

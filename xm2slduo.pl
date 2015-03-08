@@ -130,7 +130,7 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 		sysseek(INFILE, $fileoffset, 0) or die $!;
 		sysread(INFILE, $jx, 1) == 1 or die $!;
 		die "Error: invalid tempo setting" if (ord($jx) == 1);
-		$speed[0] = 0x100 - ((ord($jx)-1) * 4);
+		$speed[0] = 0x100 - (ord($jx));
 		print "Global speed:\t\t $speed[0]\n" if ( $ARGV[0] eq '-v' && $ix == 0);
 		$drums[0] = 0;
 		$ch2[0] = 0;	#tone
@@ -196,7 +196,7 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 							sysread(INFILE, $temp2, 1) == 1 or die $!;
 							$temp2 = ord($temp2);
 							if (($cpval&16) == 16 && $temp2 >= 2 && $temp2 <= 0x1f) {
-								$speed[$rows] = 0x100 - ($temp2-1) * 4;	#setting speed if bit 4 is set
+								$speed[$rows] = 0x100 - ($temp2);	#setting speed if bit 4 is set
 							}
 							$fileoffset++;
 						}
@@ -234,21 +234,26 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 					sysread(INFILE, $temp, 1) == 1 or die $!;
 					$temp = ord($temp);
 					if ($cpval == 0x0f && $temp >= 2 && $temp <= 0x1f) {
-						$speed[$rows] = 0x100 - ($temp-1) * 4;		#setting speed
+						$speed[$rows] = 0x100 - ($temp);		#setting speed
 					}
 					$fileoffset++;
 				}
 			}
 		
-			$ch1[$rows] = $speed[$rows] + $drums[$rows];
+			#$ch1[$rows] = $speed[$rows] + $drums[$rows];
+			$ch2[$rows] = $ch2[$rows] + 0x80 if ($drums[$rows] == 1);
+			$ch3[$rows] = $ch3[$rows] + 0x80 if ($drums[$rows] == 2);
 		
 			print OUTFILE "\t.byte ",'$';
-			printf(OUTFILE "%x", $ch1[$rows]);
+			printf(OUTFILE "%x", $speed[$rows]);
 			print OUTFILE ',$';
 			printf(OUTFILE "%x", $ch2[$rows]);
 			print OUTFILE ',$';
 			printf(OUTFILE "%x", $ch3[$rows]);
 			print OUTFILE "\n";
+			
+			$ch2[$rows] = $ch2[$rows] - 0x80 if ($drums[$rows] == 1);
+			$ch3[$rows] = $ch3[$rows] - 0x80 if ($drums[$rows] == 2);
 		}
 	
 		print OUTFILE "\t.byte ",'$0',"\n\n";
