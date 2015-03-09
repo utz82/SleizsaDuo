@@ -46,7 +46,7 @@ only a rough approximation of how the music will sound on the actual console,
 though. Especially lower notes will sound much worse.
 
 Tones must be entered into tracks 1 and 2, using instrument 01. Valid notes
-are C-0 - B-5. However, notes above D-5 tend to glitch out.
+are C-0 - B-5.
 
 There are two interrupting drum sounds (instrument 02 and 03), they should
 be placed in channel 3 or 4. Only one drum sound can be active at a given time.
@@ -63,7 +63,7 @@ line 34 of main.asm. In theory, up to 62 KB are possible, but MESS will break
 when trying to use more than 8 KB.
 
 I tried my best to correct the drum speed shift. If you do however find it
-insufficient, you can try to experiment with the values in line 217 resp. 257
+insufficient, you can try to experiment with the values in line 227 resp. 267
 of main.asm.
 
 
@@ -76,10 +76,10 @@ Beware that Sleizsa Duo is not guaranteed to work on all Channel F versions.
 Sleizsa Duo is optimized for use with MESS. In order to use it on real hardware,
 you need to change line 59 of main.asm to "li $40".
 
-The routine can be relocated, but make sure the frequency table (.noteTab) is
-aligned to a $ff byte page boundary. The musicData section can reside anywhere
-in memory. There is also some free mem between the drum code and the note
-table, which you can use for your own subroutines/data.
+The routine can be relocated, but make sure the .noteTab label aligns to a $ff
+byte page boundary. The musicData section can reside anywhere in memory. There
+is also some free mem between the drum code and the note table ($8c4-$8ee), 
+which you can use for your own subroutines/data.
 
 Scratchpad registers r0-r16 including the K register are used, so you'll have
 to work around that.

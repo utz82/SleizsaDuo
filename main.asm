@@ -102,6 +102,11 @@ main:
 	lr h,dc				;backup ptn pointer
 	dci .noteTab
 	sl 1				;A=A*2
+	bp .adskip1			;correct signed offset
+	inc
+	com
+	ai $80
+.adskip1
 	adc				;point DC to note counter value
 	lm	
 	lr 0,a				;note counter ch1 -> r0-1
@@ -119,6 +124,11 @@ main:
 	lr h,dc				;backup ptn pointer
 	dci .noteTab
 	sl 1				;A=A*2
+	bp .adskip2			;correct signed offset
+	inc
+	com
+	ai $80
+.adskip2
 	adc				;point DC to note counter value
 	lm
 	lr 4,a				;note counter ch2 -> r4-5
@@ -262,7 +272,9 @@ main:
 .enddrum				;debug
 
 ;**********************************************************************************************
-	org $900
+	org $900-18
+
+	.word $78C8, $7201, $6B9B, $6591, $5FDE, $5A7C, $5568, $509D, $4C17
 .noteTab
 	.word $0
 	.word $200, $21E, $23F, $261, $285, $2AB, $2D4, $2FF, $32D, $35D, $390, $3C6
@@ -270,7 +282,7 @@ main:
 	.word $800, $879, $8FA, $983, $A14, $AAD, $B50, $BFC, $CB2, $D74, $E41, $F19
 	.word $FFF, $10F3, $11F5, $1306, $1428, $155A, $16A0, $17F8, $1965, $1AE7, $1C81, $1E33
 	.word $1FFE, $21E5, $23E9, $260C, $284F, $2AB5, $2D3F, $2FEF, $32C9, $35CE, $3901, $3C65
-	.word $3FFC, $43CA, $47D2, $4C17, $509D, $5568, $5A7C, $5FDE, $6591, $6B9B, $7201, $78C8
+	.word $3FFC, $43CA, $47D2
 
 musicData
 	include	"music.asm"		;song data
