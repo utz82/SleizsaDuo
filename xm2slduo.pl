@@ -194,7 +194,7 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 							sysseek(INFILE, $fileoffset, 0) or die $!;	#read next byte of row
 							sysread(INFILE, $temp2, 1) == 1 or die $!;
 							$temp2 = ord($temp2);
-							if (($cpval&16) == 16 && $temp2 >= 2 && $temp2 <= 0x1f) {
+							if (($cpval&16) == 16 && $temp2 <= 0x1f) {
 								$speed[$rows] = 0x100 - ($temp2);	#setting speed if bit 4 is set
 							}
 							$fileoffset++;
@@ -232,7 +232,7 @@ for ($ix = 0; $ix <= ($uniqueptns)-1; $ix++) {
 					sysseek(INFILE, $fileoffset, 0) or die $!;	#read next byte of row
 					sysread(INFILE, $temp, 1) == 1 or die $!;
 					$temp = ord($temp);
-					if ($cpval == 0x0f && $temp >= 2 && $temp <= 0x1f) {
+					if ($cpval == 0x0f && $temp <= 0x1f) {
 						$speed[$rows] = 0x100 - ($temp);		#setting speed
 					}
 					$fileoffset++;
